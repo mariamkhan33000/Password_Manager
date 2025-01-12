@@ -1,8 +1,23 @@
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Manager = () => {
     const ref = useRef()
+
+    const [form, setForm] = useState({
+        site: "",
+        username: "",
+        password: ""
+    })
+    const [passwordArray, setPasswordArray] = useState([])
+
+    useEffect(() => {
+        let passsword = localStorage.getItem("password")
+        if(passsword) {
+            setPasswordArray(JSON.parse(passsword))
+        }
+    },[])
+
     const showPassword = () => {
         if(ref.current.src.includes("icons/crosseye.png")) {
             ref.current.src = "icons/eye.png"
@@ -10,6 +25,16 @@ const Manager = () => {
         else {
             ref.current.src = "icons/crosseye.png"
         }
+    }
+
+    const savePassword = () => { 
+        setPasswordArray([...passwordArray, form])
+        localStorage.setItem("passwords", JSON.stringify([...passwordArray, form]))
+        console.log(passwordArray)
+     }
+
+    const handleChange = (e) => {
+        setForm({...form, [e.target.name]: e.target.value})
     }
 
 
@@ -25,14 +50,14 @@ const Manager = () => {
         <p className="text-green-600 text-lg text-center">Your Own Password Manager</p>
         <div className="text-white flex flex-col p-4 gap-5">
 
-            <input className="rounded-full border border-green-500 outline-none w-full p-4 py-1 text-black" type="text" name="" id="" placeholder="Enter Website URL .  .  ." />
+            <input className="rounded-full border border-green-500 outline-none w-full p-4 py-1 text-black" type="text" name="site" id="" placeholder="Enter Website URL .  .  ."  value={form.site} onChange={handleChange}/>
             <div className="flex w-full gap-5 justify-between">
 
-            <input className="rounded-full border border-green-500 outline-none w-full p-4 py-1 text-black" type="text" name="" id="" placeholder="Enter Username .  .  ."/>
+            <input className="rounded-full border border-green-500 outline-none w-full p-4 py-1 text-black" type="text" name="username" id="" placeholder="Enter Username .  .  ." value={form.username} onChange={handleChange}/>
 
             <div className="relative">
 
-            <input className="rounded-full  border border-green-500 outline-none w-[280px] p-4 py-1 text-black" type="password" name="" id="" placeholder="Enter the password .  .  ."/>
+            <input className="rounded-full  border border-green-500 outline-none w-[280px] p-4 py-1 text-black" type="password" name="password" id="" placeholder="Enter the password .  .  ." value={form.password} onChange={handleChange}/>
             <span className="absolute right-0 text-black top-0" onClick={showPassword}>
                 <img ref={ref} className="rounded-full p-1 mr-1 cursor-pointer " width={32} src="icons/eye.png" alt="eye" />
             </span>
@@ -40,7 +65,7 @@ const Manager = () => {
             
             </div>
             <div className="flex items-center justify-center">
-            <button  className="flex items-center text-black font-bold gap-3 bg-green-300 px-12 py-2 rounded-full outline-none border border-green-300 cursor-pointer hover:bg-green-600">Add Password
+            <button onClick={savePassword} className="flex items-center text-black font-bold gap-3 bg-green-300 px-12 py-2 rounded-full outline-none border border-green-300 cursor-pointer hover:bg-green-600">Add Password
             <AiOutlineAppstoreAdd size={24} />
             </button>
                 
