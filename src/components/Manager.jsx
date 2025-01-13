@@ -1,8 +1,13 @@
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { useEffect, useRef, useState } from "react";
+import { IoCopy } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { FcDeleteDatabase } from "react-icons/fc";
 
 const Manager = () => {
   const ref = useRef();
+  const passwordRef = useRef()
 
   const [form, setForm] = useState({
     site: "",
@@ -19,9 +24,12 @@ const Manager = () => {
   }, []);
 
   const showPassword = () => {
+    passwordRef.current.type = "text"
     if (ref.current.src.includes("icons/crosseye.png")) {
       ref.current.src = "icons/eye.png";
+      passwordRef.current.type = "password"
     } else {
+        passwordRef.current.type = "text";
       ref.current.src = "icons/crosseye.png";
     }
   };
@@ -35,6 +43,11 @@ const Manager = () => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const copyText = (text) => {
+    alert("Coppy to clipbord")
+    navigator.clipboard.writeText(text)
+  }
 
   return (
     <>
@@ -73,8 +86,9 @@ const Manager = () => {
 
             <div className="relative">
               <input
+              ref={passwordRef}
                 className="rounded-full  border border-green-500 outline-none w-[280px] p-4 py-1 text-black"
-                type="text"
+                type="password"
                 name="password"
                 id=""
                 placeholder="Enter the password .  .  ."
@@ -115,15 +129,40 @@ const Manager = () => {
                   <th className="py-1">Site</th>
                   <th className="py-1">Username</th>
                   <th className="py-1">Password</th>
+                  <th className="py-1">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-green-200">
                 {passwordArray.map((item, index) => {
-                    return <tr key={index}>
-                    <td className="text-center py-1 min-w-32 border border-white"><a href={item.site} target="_blank "></a>{item.site}</td>
-                    <td className="text-center py-1 min-w-32 border border-white">{item.username}</td>
-                    <td className="text-center py-1 min-w-32 border border-white">{item.password}</td>
+                    return <tr key={index} className="">
+                    <td className="text-center py-1 min-w-32 border border-white">
+                      <div className="flex items-center justify-center">
+                        <a href={item.site} target="_blank" rel="noopener noreferrer">
+                          {item.site}
+                        </a>
+                        <IoCopy className="ml-2 cursor-pointer" onClick={() => {copyText(item.site)}}/>
+                      </div>
+                    </td>
+                    <td className="text-center py-1 min-w-32 border border-white">
+                      <div className="flex items-center justify-center">
+                        {item.username}
+                        <IoCopy className="ml-2 cursor-pointer" onClick={() => {copyText(item.username)}}/>
+                      </div>
+                    </td>
+                    <td className="text-center py-1 min-w-32 border border-white">
+                      <div className="flex items-center justify-center">
+                        {item.password}
+                        <IoCopy className="ml-2 cursor-pointer" onClick={() => {copyText(item.password)}}/>
+                      </div>
+                    </td>
+                    <td className="text-center py-1 min-w-32 border border-white">
+                      <div className="flex items-center justify-center gap-3">
+                        <span className="cursor-pointer"><FaEdit size={20}/></span>
+                      <span className="cursor-pointer"><FcDeleteDatabase size={20}/></span>
+                      </div>
+                    </td>
                   </tr>
+                  
                 })}
                 
                 
